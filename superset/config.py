@@ -38,8 +38,8 @@ with open(PACKAGE_FILE) as package_file:
 
 ROW_LIMIT = 50000
 VIZ_ROW_LIMIT = 10000
-SUPERSET_WORKERS = 2
-SUPERSET_CELERY_WORKERS = 32
+SUPERSET_WORKERS = 1
+SUPERSET_CELERY_WORKERS = 2
 
 SUPERSET_WEBSERVER_ADDRESS = '0.0.0.0'
 SUPERSET_WEBSERVER_PORT = 8088
@@ -53,9 +53,9 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 SECRET_KEY = '\2\1thisismyscretkey\1\2\e\y\y\h'  # noqa
 
 # The SQLAlchemy connection string.
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(DATA_DIR, 'superset.db')
+#SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(DATA_DIR, 'superset.db')
 # SQLALCHEMY_DATABASE_URI = 'mysql://myapp@localhost/myapp'
-# SQLALCHEMY_DATABASE_URI = 'postgresql://root:password@localhost/myapp'
+SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:postgres@localhost/superset'
 
 # The limit of queries fetched for query search
 QUERY_SEARCH_LIMIT = 1000
@@ -234,17 +234,17 @@ WARNING_MSG = None
 # Default celery config is to use SQLA as a broker, in a production setting
 # you'll want to use a proper broker as specified here:
 # http://docs.celeryproject.org/en/latest/getting-started/brokers/index.html
-"""
+
 # Example:
 class CeleryConfig(object):
-  BROKER_URL = 'sqla+sqlite:///celerydb.sqlite'
+  BROKER_URL =  'redis://localhost:6379/'
   CELERY_IMPORTS = ('superset.sql_lab', )
-  CELERY_RESULT_BACKEND = 'db+sqlite:///celery_results.sqlite'
+  CELERY_RESULT_BACKEND =  'redis://localhost:6379/'
   CELERY_ANNOTATIONS = {'tasks.add': {'rate_limit': '10/s'}}
   CELERYD_LOG_LEVEL = 'DEBUG'
 CELERY_CONFIG = CeleryConfig
-"""
-CELERY_CONFIG = None
+
+#CELERY_CONFIG = None
 SQL_CELERY_DB_FILE_PATH = os.path.join(DATA_DIR, 'celerydb.sqlite')
 SQL_CELERY_RESULTS_DB_FILE_PATH = os.path.join(DATA_DIR, 'celery_results.sqlite')
 
@@ -332,3 +332,6 @@ try:
             superset_config.__file__))
 except ImportError:
     pass
+
+from werkzeug.contrib.cache import FileSystemCache
+RESULTS_BACKEND = FileSystemCache('/tmp/sqllab_cache', default_timeout=60*24*7)
