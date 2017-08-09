@@ -21,7 +21,7 @@ function ternaryVis(slice, payload) {
     throw new Error('Number of Colums should be three');
   }
   const plotOpts = {
-    side: 400,
+    side: 300,
     margin: { top: 70, left: 150, bottom: 150, right: 150 },
     axis_labels: labels,
     axis_ticks: d3.range(0, 101, 20),
@@ -34,8 +34,8 @@ function ternaryVis(slice, payload) {
     };
 
     const opt = {
-      width: 900,
-      height: 900,
+      width: slice.width(),
+      height: slice.height(),
       side: 700,
       margin: { top: 50, left: 50, bottom: 50, right: 50 },
       axis_labels: ['A', 'B', 'C'],
@@ -44,7 +44,7 @@ function ternaryVis(slice, payload) {
       axisLabelMargin: 40,
     };
 
-    for (let o in userOpt) {
+    for (const o in userOpt) {
       opt[o] = userOpt[o];
     }
 
@@ -107,7 +107,7 @@ function ternaryVis(slice, payload) {
 
       // ticks
       // (TODO: this seems a bit verbose/ repetitive!);
-    const n = opt.axis_ticks.length;
+
     if (opt.minor_axis_ticks) {
       opt.minor_axis_ticks.forEach(function (v) {
         const coord1 = coord([v, 0, 100 - v]);
@@ -157,34 +157,29 @@ function ternaryVis(slice, payload) {
         .attr('transform', 'rotate(60)')
         .attr('text-anchor', 'end')
         .attr('x', -opt.tickLabelMargin)
-        .text(function (d) { return v; })
+        .text(function () { return v; })
         .classed('a-axis tick-text', true);
 
       axes.append('g')
           .attr('transform', function () {
-            return 'translate(' + coord2[0] + ',' + coord2[1] + ')'
+            return 'translate(' + coord2[0] + ',' + coord2[1] + ')';
           })
           .append('text')
           .attr('transform', 'rotate(-60)')
           .attr('text-anchor', 'end')
           .attr('x', -opt.tickLabelMargin)
-          .text(function (d) { return (100 - v); })
+          .text(function () { return (100 - v); })
           .classed('b-axis tick-text', true);
 
       axes.append('g')
-          .attr('transform', function (d) {
+          .attr('transform', function () {
             return 'translate(' + coord3[0] + ',' + coord3[1] + ')';
           })
           .append('text')
-          .text(function (d) { return v; })
+          .text(function () { return v; })
           .attr('x', opt.tickLabelMargin)
           .classed('c-axis tick-text', true);
     });
-
-
-    function scale(p, factor) {
-      return [p[0] * factor, p[1] * factor];
-    }
 
     plot.data = function (data, accessor, bindBy) {
     // bind by is the dataset property used as an id for the join
@@ -214,8 +209,7 @@ function ternaryVis(slice, payload) {
   }
   const tp = ternaryPlot(slice.selector, plotOpts);
   function next() {
-    const d = payload.data;
-    tp.data(d, function (d) {
+    tp.data(payload.data, function (d) {
       if (d[labels[0]] > 100 || d[labels[1]] > 100 || d[labels[2]] > 100) {
         throw new Error('Tentary graph plot percentages');
       }
