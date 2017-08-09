@@ -667,35 +667,29 @@ export const visTypes = {
       },
     },
   },
-tony: {
-  label: 'Sunburst - tony',
-  controlPanelSections: [
-    {
-      label: null,
-      controlSetRows: [
-        ['groupby'],
-        ['metric', 'secondary_metric'],
-        ['row_limit'],
-      ],
-    },
-  ],
-  controlOverrides: {
-    metric: {
-      label: 'Primary Metric',
-      description: 'The primary metric is used to define the arc segment sizes',
-    },
-    secondary_metric: {
-      label: 'Secondary Metric',
-      description: 'This secondary metric is used to ' +
-      'define the color as a ratio against the primary metric. ' +
-      'If the two metrics match, color is mapped level groups',
-    },
-    groupby: {
-      label: 'Hierarchy',
-      description: 'This defines the level of the hierarchy',
+  ternary: {
+    label: 'Ternary',
+    controlPanelSections: [
+      {
+        label: null,
+        controlSetRows: [
+          ['metric'],
+          ['groupby'],
+          ['row_limit'],
+        ],
+      },
+    ],
+    controlOverrides: {
+      metric: {
+        label: 'Primary Metric',
+        description: 'The primary metric is used to define the arc segment sizes',
+      },
+      groupby: {
+        label: 'columns',
+        description: 'description',
+      },
     },
   },
-},
 
   country_map: {
     label: 'Country Map',

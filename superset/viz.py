@@ -303,36 +303,22 @@ class BaseViz(object):
     def json_data(self):
         return json.dumps(self.data)
 
-class TonyViz(BaseViz):
+class TernaryViz(BaseViz):
 
     """A multi level sunburst chart"""
 
-    viz_type = "tony"
-    verbose_name = _("Sunburst -tony")
+    viz_type = "ternary"
+    verbose_name = _("ternary")
     is_timeseries = False
-    credits = (
-        'Kerry Rodden '
-        '@<a href="https://bl.ocks.org/kerryrodden/7090426">bl.ocks.org</a>')
 
     def get_data(self, df):
-
-        # if m1 == m2 duplicate the metric column
-        cols = self.form_data.get('groupby')
-        metric = self.form_data.get('metric')
-        secondary_metric = self.form_data.get('secondary_metric')
-        if metric == secondary_metric:
-            ndf = df
-            ndf.columns = [cols + ['m1', 'm2']]
-        else:
-            cols += [
-                self.form_data['metric'], self.form_data['secondary_metric']]
-            ndf = df[cols]
-        return json.loads(ndf.to_json(orient="values"))  # TODO fix this nonsense
+        return df.T.to_dict().values()  # Convert DataFrame into list of dict
 
     def query_obj(self):
-        qry = super(TonyViz, self).query_obj()
-        qry['metrics'] = [
-            self.form_data['metric'], self.form_data['secondary_metric']]
+        qry = super(TernaryViz, self).query_obj()
+        fd = self.form_data
+        if fd.get('all_columns'):
+            qry['columns'] = fd.get('all_columns')
         return qry
 
 class TableViz(BaseViz):
@@ -1678,7 +1664,7 @@ viz_types_list = [
     SankeyViz,
     CountryMapViz,
     ChordViz,
-    TonyViz,
+    TernaryViz,
     WorldMapViz,
     FilterBoxViz,
     IFrameViz,

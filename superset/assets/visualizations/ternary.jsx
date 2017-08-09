@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle, no-param-reassign */
 import d3 from 'd3';
 
-require('./tony.css');
+require('./ternary.css');
 
 function lineAttributes(p1, p2) {
   return {
@@ -14,12 +14,16 @@ function lineAttributes(p1, p2) {
 
 
 // Modified from http://bl.ocks.org/kerryrodden/7090426
-function tonyVis(slice, payload) {
+function ternaryVis(slice, payload) {
   const container = d3.select(slice.selector);
+  const labels = Object.keys(payload.data[0]);
+  if (labels.length !== 3) {
+    throw new Error('Number of Colums should be three');
+  }
   const plotOpts = {
     side: 400,
     margin: { top: 70, left: 150, bottom: 150, right: 150 },
-    axis_labels: ['Journalist', 'Developer', 'Designer'],
+    axis_labels: labels,
     axis_ticks: d3.range(0, 101, 20),
     minor_axis_ticks: d3.range(0, 101, 5),
   };
@@ -210,18 +214,15 @@ function tonyVis(slice, payload) {
   }
   const tp = ternaryPlot(slice.selector, plotOpts);
   function next() {
-    const d = [];
-    for (let i = 0; i < 100; i++) {
-      d.push({
-        journalist: Math.random(),
-        developer: Math.random(),
-        designer: Math.random(),
-        label: 'point' + i,
-      });
-    }
-    tp.data(d, function (d) { return [d.journalist, d.developer, d.designer]; }, 'label');
+    const d = payload.data;
+    tp.data(d, function (d) {
+      if (d[labels[0]] > 100 || d[labels[1]] > 100 || d[labels[2]] > 100) {
+        throw new Error('Tentary graph plot percentages');
+      }
+      return [d[labels[0]], d[labels[1]], d[labels[2]]];
+    }, 'label');
   }
   next();
 }
 
-module.exports = tonyVis;
+module.exports = ternaryVis;
