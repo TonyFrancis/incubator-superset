@@ -21,7 +21,6 @@ function ternaryVis(slice, payload) {
     throw new Error('Number of Colums should be three');
   }
   const plotOpts = {
-    side: 300,
     margin: { top: 70, left: 150, bottom: 150, right: 150 },
     axis_labels: labels,
     axis_ticks: d3.range(0, 101, 20),
@@ -36,10 +35,8 @@ function ternaryVis(slice, payload) {
     const opt = {
       width: slice.width(),
       height: slice.height(),
-      side: 700,
+      side: Math.min(slice.width(), slice.height()) * 0.9,
       margin: { top: 50, left: 50, bottom: 50, right: 50 },
-      axis_labels: ['A', 'B', 'C'],
-      axis_ticks: [0, 20, 40, 60, 80, 100],
       tickLabelMargin: 10,
       axisLabelMargin: 40,
     };
